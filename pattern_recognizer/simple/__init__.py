@@ -7,7 +7,7 @@ class Simple:
 
 	def calc_match(self, sample, pattern):
 		if pattern != 0:
-			return (sample-self.to_zero)*100/ pattern
+			return (sample-self.to_zero)*100/pattern
 
 		else:
 			return (sample*100)/self.to_zero
@@ -36,8 +36,7 @@ class Simple:
 							return False
 				return True
 
-		else:
-			return False
+		return False
 
 	def get_simple_patterns(self, simple_patterns, patterns_base):
 		gen=[]
@@ -82,7 +81,11 @@ class Simple:
 
 			item={
 				"index":index, 
-				"value":sample[index]['close'],
+				"close":sample[index]['close'],
+				"open":sample[index]['open'],
+				"low":sample[index]['low'],
+				"high":sample[index]['high'],
+				"volume":sample[index]['volume'],
 				"match_value":match_value, 
 				"matching": matching,
 				"timestamp": sample[index]['timestamp']
@@ -123,7 +126,7 @@ class Simple:
 			)
 
 			if match:
-				result['name']=pattern['pattern_name']
+				result['matched_simple_pattern']=pattern['pattern_name']
 				matching.append(result)
 
 

@@ -7,25 +7,35 @@ class Instrumental:
 
 
 
-	def match_to_pattern(self, sample, pattern, pattern_name):
+	def match_to_pattern(self, sample, pattern):
 		avg_match=0
 
-		entry_point_pattern=pattern['instrumental_patterns']['entry_point']
-		self.simple_pattern_recognizer.patterns=self.simple_pattern_recognizer.get_simple_patterns(
-			simple_patterns=entry_point_pattern['patterns'],
-			patterns_base=pattern['simple_patterns']
-		)
-		#pprint(entry_point_pattern)
+		for p in pattern['instrumental_patterns']:
+			
+			pat=pattern['instrumental_patterns'][p]
 
-		entry_point_match_result, entry_point_match_details=self.simple_pattern_recognizer.find_patterns(
-			sample=sample,
-			matching_min=entry_point_pattern['matching_min'],
+			self.simple_pattern_recognizer.patterns=self.simple_pattern_recognizer.get_simple_patterns(
+				simple_patterns=pat['patterns'],
+				patterns_base=pattern['simple_patterns']
 			)
-		if entry_point_match_result:
-			pass
-			pprint(entry_point_match_details)
 
+			pattern_match_result, pattern_match_details=self.simple_pattern_recognizer.find_patterns(
+				sample=sample,
+				matching_min=pat['matching_min'],
+			)
+
+			if pattern_match_result:
+				for a in pattern_match_details:
+					a['pattern_name']=pattern['pattern_name']
+					a['event_name']=pat['event']
+				return [pattern_match_result,  pattern_match_details]
+
+		return None
 
 	def find_pattern(self, sample):
 		for pattern in self.patterns:
-			self.match_to_pattern(sample, pattern, pattern['name'])
+			result=self.match_to_pattern(sample, pattern)
+			if result and len(result)==2:
+				return result
+
+		return None
